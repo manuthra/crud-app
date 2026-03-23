@@ -5,6 +5,12 @@ const form = document.getElementById("userForm");
 const tableBody = document.getElementById("tableBody");
 const editIndexInput = document.getElementById("editIndex");
 
+if(sessionStorage.getItem("users")){
+    users = JSON.parse(sessionStorage.getItem("users"))
+    console.log(users)
+    displayUsers()
+}
+
 // add entry to users-CREATE
 form.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -12,22 +18,23 @@ form.addEventListener("submit", (e) => {
     // get name & email
     const name = document.getElementById("name").value;
     const email = document.getElementById("email").value;
-    if(editIndexInput.value == ""){
-    // add name and email to users array
-    users.push({ name, email });
-    }else{
+    if (editIndexInput.value == "") {
+        // add name and email to users array
+        users.push({ name, email });
+    } else {
         // edit user
-    users[editIndexInput.value] = {name, email}
-    editIndexInput.value = ""
+        users[editIndexInput.value] = { name, email }
+        editIndexInput.value = ""
     }
 
     form.reset();
-    console.log(users);
+    // console.log(users);
+    sessionStorage.setItem("users",JSON.stringify(users))
     displayUsers()
 });
 
 // users should listed in table - READ
-const displayUsers = () => {
+function displayUsers () {
     tableBody.innerHTML = "";
 
     users.forEach((user, index) => {
@@ -56,8 +63,10 @@ const editUser = (index) => {
 
 // delete user
 const deleteUser = (index) => {
-    if(confirm("Are you sure want to delete data?")){
+    if (confirm("Are you sure want to delete data?")) {
         users.splice(index, 1)
+        // update users to session storage
+        sessionStorage.setItem("users",JSON.stringify(users))
         displayUsers()
     }
 }
